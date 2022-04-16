@@ -38,7 +38,7 @@ def train(model, dataloader, optimizer, criterion):
     print('dataset length', len(dataloader))
     for batch in dataloader:
         optimizer.zero_grad()
-        image, command, speed, actions, _ = batch
+        image, command, speed, actions = batch
         image, command, speed, actions = image.cuda(), command.cuda(), speed.cuda(), actions.cuda()
         pred_actions, pred_speed = model(image, command, speed)
         actions_loss = criterion(pred_actions, actions)
@@ -82,15 +82,14 @@ def main():
 
     # You can change these hyper parameters freely, and you can add more
     num_epochs = 10
-    batch_size = 256
-    test_batch_size = 64
+    batch_size = 128
     lr = 2e-4 # using the default lr from the paper
     save_path = "cilrs_model.ckpt"
     
     print('Preparing the dataloaders...')
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
                               drop_last=True)
-    val_loader = DataLoader(val_dataset, batch_size=test_batch_size, shuffle=False)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     criterion = nn.L1Loss()
