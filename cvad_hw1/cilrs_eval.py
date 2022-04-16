@@ -20,9 +20,9 @@ class Evaluator():
 
     def generate_action(self, rgb, command, speed):
         # Your code here
-        rgb = transforms.ToTensor()(rgb).unsqueeze(0).cuda()
-        command = torch.tensor(command).unsqueeze(0).cuda()
-        speed = torch.tensor(speed).unsqueeze(0).cuda()
+        rgb = transforms.ToTensor()(rgb).unsqueeze(0).cuda().float()
+        command = torch.tensor(command).unsqueeze(0).cuda().int()
+        speed = torch.tensor(speed).unsqueeze(0).cuda().float()
         with torch.no_grad():
             actions, _ = self.agent(rgb, command, speed)
         return actions.cpu().detach().numpy()
