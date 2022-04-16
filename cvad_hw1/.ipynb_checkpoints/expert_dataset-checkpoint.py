@@ -31,7 +31,8 @@ class ExpertDataset(Dataset):
             command = torch.tensor([measurements["command"]])
             speed = torch.tensor([measurements["speed"]])
             actions = torch.tensor([measurements["steer"], measurements["throttle"], measurements["brake"]])
-        return image, command, speed, actions
+            affordances = torch.tensor([measurements["tl_state"],measurements["tl_dist"],measurements["lane_dist"],measurements["route_angle"]])
+        return image, command, speed, actions, affordances
 
     
 def read_root(dir):

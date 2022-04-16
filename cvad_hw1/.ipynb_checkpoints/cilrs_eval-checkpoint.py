@@ -12,20 +12,42 @@ class Evaluator():
         self.config = config
         self.agent = self.load_agent()
 
-    def load_agent():
+    def load_agent(self,):
         # Your code here
         model = torch.load("cilrs_model.ckpt")
         model.cuda().eval()
         return model
 
-    def generate_action(rgb, command, speed):
+    def generate_action(self, rgb, command, speed):
         # Your code here
-        rgb = transforms.ToTensor()(rgb).unsqueeze(0).cuda()
-        command = torch.tensor(command).unsqueeze(0).cuda()
-        speed = torch.tensor(speed).unsqueeze(0).cuda()
+        rgb = transforms.ToTensor()(rgb).unsqueeze(0).cuda().float()
+        command = torch.tensor(command).unsqueeze(0).unsqueeze(0).cuda().int()
+        speed = torch.tensor(speed).unsqueeze(0).unsqueeze(0).cuda().float()
         with torch.no_grad():
             actions, _ = self.agent(rgb, command, speed)
-        return actions.cpu().detach().numpy()
+        actions = actions.cpu().detach()
+        throttle, brake, steer = torch.chunk(actions,3,dim=1)
+        throttle, brake, steer = throttle.item(), brake.item(), steer.item() 
+        # throttle, brake, steer = actions[0,1], actions[0,2], actions[0,0]
+        
+        # throttle = torch.sigmoid(throttle).cpu().detach()
+        # brake = torch.sigmoid(brake).cpu().detach()
+        # steer = torch.tanh(steer).cpu().detach()
+        
+        # throttle = torch.clamp(throttle, 0.0, 1.0).cpu().detach().item()
+        # brake = torch.clamp(brake, 0.0, 1.0).cpu().detach().item()
+        # steer = torch.clamp(steer, -1.0, 1.0).cpu().detach().item()
+        
+        # print('brake', brake)
+        # print('throttle', throttle)
+        # print('steer', steer)
+        # actions = actions.cpu().detach().numpy()
+        # print('actionsss ', actions[0,0])
+        # print(actions[0,1])
+        # print(actions[0,2])
+        return throttle, steer, brake
+        # return 1.0, 0.0, 0.0
+        # return actions
 
     def take_step(self, state):
         rgb = state["rgb"]
