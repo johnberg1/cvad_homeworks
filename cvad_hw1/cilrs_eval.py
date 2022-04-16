@@ -12,13 +12,13 @@ class Evaluator():
         self.config = config
         self.agent = self.load_agent()
 
-    def load_agent():
+    def load_agent(self,):
         # Your code here
         model = torch.load("cilrs_model.ckpt")
         model.cuda().eval()
         return model
 
-    def generate_action(rgb, command, speed):
+    def generate_action(self, rgb, command, speed):
         # Your code here
         rgb = transforms.ToTensor()(rgb).unsqueeze(0).cuda()
         command = torch.tensor(command).unsqueeze(0).cuda()
