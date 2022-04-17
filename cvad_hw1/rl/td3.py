@@ -31,7 +31,6 @@ class TD3(BaseOffPolicy):
         q1_out = q1(state, action)
         q2_out = q2(state, action)
 
-        # with torch.no_grad():
         act = self.policy(state)
         noise = torch.clamp(torch.randn_like(act) * 0.1, -0.5, 0.5) # add the noise to the action, the clamp limits are taken from spinningup
         act = torch.clamp(act + noise, -1.0, 1.0)
