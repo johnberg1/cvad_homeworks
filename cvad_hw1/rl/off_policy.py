@@ -46,6 +46,7 @@ class BaseOffPolicy(ABC):
         self._replay_buffer = ReplayBuffer(config["replay_buffer_size"])
 
     def load_ckpt(self, checkpoint_path):
+        print('Loading from checkpoint')
         checkpoint = torch.load(checkpoint_path)
         self.policy.load_state_dict(checkpoint["policy_state_dict"])
         self.target_policy.load_state_dict(checkpoint["target_policy_state_dict"])
@@ -153,11 +154,11 @@ class BaseOffPolicy(ABC):
 
             while not is_terminal and ep_step < self.config["episode_max_steps"]:
                 # Generate action
-                features = self._extract_features(state)
-                action = self.policy(features, [state["command"]])
+                features = self._extract_features(state).cuda().float()
+                action = self.policy(features ) # [state["command"]]
 
                 # Take step
-                new_state, reward_dict, is_terminal = self._take_step(state, action)
+                new_state, reward_dict, is_terminal = self._take_step(state, action, test=True)
 
                 # Update episode return
                 for key, val in reward_dict.items():
@@ -200,6 +201,7 @@ class BaseOffPolicy(ABC):
         }
         if include_replay_buffer:
             ckpt["replay_buffer_q"] = self._replay_buffer.q
+        print(join("checkpoints", "rl", ckpt_str))
         torch.save(ckpt, join("checkpoints", "rl", ckpt_str))
 
     def _update(self, loader):

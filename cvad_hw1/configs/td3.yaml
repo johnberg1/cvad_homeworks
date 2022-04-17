@@ -3,7 +3,7 @@ experiment_name : "td3"
 # Maximum number of samples to be held in the replay buffer
 replay_buffer_size : 500000
 # Required number of new samples to do an update
-update_every : 400
+update_every : 200 # 400
 # Maximum steps taken before terminating episode
 episode_max_steps : 5000
 # Batch size sampled from replay buffer
@@ -11,15 +11,15 @@ batch_size : 1000
 # Reward discount
 discount : 0.95
 # How many steps should pass before first update
-no_update_steps : 20000
+no_update_steps : 10000 # 20000
 # How many initial steps should be exploration
-exploration_steps : 50000
+exploration_steps : 25000 # 50000
 # How many steps should be augmented after exploration is done
 augment_steps : 0
 # How many steps should pass between each evaluation of our target policy
-evaluation_interval : 20000
+evaluation_interval : 10000 # 20000
 # How many steps should pass between each save of our checkpoints
-save_interval : 10000
+save_interval : 5000 # 10000
 
 # Allowed range for actions:
 action_space : [[-1, 1], [-1, 1]]
